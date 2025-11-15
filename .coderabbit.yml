@@ -1,0 +1,13 @@
+pull_request:
+  auto_review: true
+  auto_describe: true
+  review_on:
+    - opened
+    - reopened
+    - synchronize
+
+review:
+  enable_comments: true
+  check_description: true
+  style_check: true
+  test_suggestions: true
