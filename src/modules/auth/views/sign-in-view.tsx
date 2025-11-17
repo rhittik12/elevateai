@@ -26,7 +26,7 @@ import {Alert , AlertTitle} from "@/components/ui/alert";
 
 
 const formSchema = z.object({
-  email: z.email(),
+  email: z.email({ message: "Invalid email address" }),
   password: z.string().min(1, { message: "Password is required" }),
 });
 
@@ -121,7 +121,7 @@ export const SignInView = () => {
                   </div>
                   {!!error && (
                     <Alert className="bg-destructive/10 border-none">
-                      <OctagonAlertIcon className="h-4 w-4 !text-destructive!" />
+                      <OctagonAlertIcon className="h-4 w-4 !text-destructive" />
                         <AlertTitle>{error}</AlertTitle>
                     </Alert>
                 )}
