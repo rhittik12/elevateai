@@ -6,7 +6,7 @@ interface Props{
     children: React.ReactNode;
 }
 
-const layout = ({ children }: Props) => {
+const Layout = ({ children }: Props) => {
     return (
         <SidebarProvider>
             <DashboardSidebar/>
@@ -18,4 +18,4 @@ const layout = ({ children }: Props) => {
     );
 };
 
-export default layout;
+export default Layout;
