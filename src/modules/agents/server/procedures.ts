@@ -12,3 +12,5 @@ export const agentsRouter = createTRPCRouter({
         return data;
     }),
 });
+
+export type AgentsRouter = typeof agentsRouter;
