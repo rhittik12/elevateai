@@ -1,36 +1,45 @@
 "use client";
 
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { useTRPC } from "@/trpc/client";
 import { LoadingState } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
+import { DataTable } from "@/components/data-table";
+import { columns } from "../components/columns";
+import { EmptyState } from "@/components/empty-state";
 
 export const MeetingsView = () => {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.meetings.getMany.queryOptions({}));
 
   return (
-    <div>
-      {JSON.stringify(data)}
+    <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
+      <DataTable data={data.items} columns={columns} />
+      {data.items.length === 0 && (
+        <EmptyState
+          title="No Meetings Found"
+          description="You have not created any meetings yet. Get started by creating a new meeting."
+        />
+      )}
     </div>
   );
 };
 
 export const MeetingsViewLoading = () => {
-    return (
-        <LoadingState
-            title="Loading Meetings"
-            description="Please wait while we load the meetings."
-        />
-    );
+  return (
+    <LoadingState
+      title="Loading Meetings"
+      description="Please wait while we load the meetings."
+    />
+  );
 }
 
 export const MeetingsViewError = () => {
-    return (
-        <ErrorState
-            title="Error Loading Meetings"
-            description="There was an error loading the meetings. Please try again."
-        />
-    );
+  return (
+    <ErrorState
+      title="Error Loading Meetings"
+      description="There was an error loading the meetings. Please try again."
+    />
+  );
 }
