@@ -28,13 +28,13 @@ export const MeetingsView = () => {
         columns={columns}
         onRowClick={(row) => router.push(`/meetings/${row.id}`)}
       />
-
-      <DataPagination
-        page={filters.page}
-        totalPages={data.totalPages}
-        onPageChange={(page) => setFilters({ page })}
-      />
-      {data.items.length === 0 && (
+      {data.items.length > 0 ? (
+        <DataPagination
+          page={filters.page}
+          totalPages={data.totalPages}
+          onPageChange={(page) => setFilters({ page })}
+        />
+      ) : (
         <EmptyState
           title="No Meetings Found"
           description="You have not created any meetings yet. Get started by creating a new meeting."
