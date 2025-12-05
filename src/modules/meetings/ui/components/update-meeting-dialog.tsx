@@ -5,11 +5,6 @@ import { MeetingGetOne } from "../../types";
 interface UpdateMeetingDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-}
-
-interface UpdateMeetingDialogProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
     initialValues: MeetingGetOne;
 }
 
