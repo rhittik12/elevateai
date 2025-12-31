@@ -2,6 +2,7 @@ import { and, eq, not } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 import {
+    MessageNewEvent,
     CallEndedEvent,
     CallTranscriptionReadyEvent,
     CallSessionParticipantLeftEvent,
@@ -13,6 +14,14 @@ import { db } from "@/db";
 import { agents, meetings } from "@/db/schema";
 import { streamVideo } from "@/lib/stream-video";
 import { inngest } from "@/inngest/client";
+import OpenAI from "openai";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { generateAvatarUri } from "@/lib/avatar";
+import { streamChat } from "@/lib/stream-chat";
+
+const openaiClient = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY!,
+});
 
 function verifySignatureWithSDK(body: string, signature: string): boolean {
     return streamVideo.verifyWebhook(body, signature);
@@ -191,6 +200,128 @@ export async function POST(req: NextRequest) {
                 recordingUrl: event.call_recording.url,
             })
             .where(eq(meetings.id, meetingId));
+    } else if (eventType === "message.new") {
+        const event = payload as MessageNewEvent;
+
+        const userId = event.user?.id;
+        const channelId = event.channel_id;
+        const text = event.message?.text;
+
+        if (!userId || !channelId || !text) {
+            return NextResponse.json(
+                { error: "Missing required fields" },
+                { status: 400 }
+            );
+        }
+
+        const [existingMeeting] = await db
+            .select()
+            .from(meetings)
+            .where(
+                and(
+                    eq(meetings.id, channelId),
+                    eq(meetings.status, "completed")
+                )
+            );
+
+        if (!existingMeeting) {
+            return NextResponse.json(
+                { error: "Meeting not found" },
+                { status: 404 }
+            );
+        }
+
+        const [existingAgent] = await db
+            .select()
+            .from(agents)
+            .where(eq(agents.id, existingMeeting.agentId));
+
+        if (!existingAgent) {
+            return NextResponse.json(
+                { error: "Agent not found" },
+                { status: 404 }
+            );
+        }
+
+        if (userId !== existingAgent.id) {
+            const instructions = `
+            You are an AI assistant helping the user revisit a recently completed meeting.
+            Below is the meeting summary:
+            
+            ${existingMeeting.summary}
+            
+            Behavioral guidelines from the original meeting assistant:
+            ${existingAgent.instructions}
+            
+            IMPORTANT RULES:
+            - When asked for the summary, provide it directly and concisely WITHOUT rephrasing or elaborating multiple times.
+            - Keep responses short and to the point.
+            - Do not repeat information unnecessarily.
+            - If asked a specific question, answer it directly.
+            - Only elaborate when specifically asked for more details.
+            - Use the conversation history for context, but avoid redundancy.
+            - Never repeat your previous answers verbatim.
+            - If the same question is asked again, answer once briefly.
+            
+            If the summary doesn't contain enough information to answer a question, briefly let the user know.
+            `;
+
+            const channel = streamChat.channel("messaging", channelId);
+            await channel.watch();
+
+            const previousMessages = channel.state.messages
+                .slice(-5)
+                .filter(
+                    (msg) =>
+                        msg.text &&
+                        msg.text.trim() !== "" &&
+                        msg.user?.id !== existingAgent.id // 🚨 EXCLUDE AI
+                )
+                .map<ChatCompletionMessageParam>((message) => ({
+                    role: "user",
+                    content: message.text!,
+                }));
+
+            const GPTResponse = await openaiClient.chat.completions.create({
+                messages: [
+                    { role: "system", content: instructions },
+                    ...previousMessages,
+                    { role: "user", content: text },
+                ],
+                model: "gpt-4o",
+            });
+
+            const GPTResponseText = GPTResponse.choices[0].message.content;
+
+            if (!GPTResponseText) {
+                return NextResponse.json(
+                    { error: "No response from GPT" },
+                    { status: 400 }
+                );
+            }
+
+            const avatarUrl = generateAvatarUri({
+                seed: existingAgent.name,
+                variant: "botttsNeutral",
+            });
+
+            streamChat.upsertUser({
+                id: existingAgent.id,
+                name: existingAgent.name,
+                image: avatarUrl,
+            });
+
+            channel.sendMessage({
+                text: GPTResponseText,
+                user: {
+                    id: existingAgent.id,
+                    name: existingAgent.name,
+                    image: avatarUrl,
+                },
+            });
+
+        }
+
     }
 
     return NextResponse.json({ status: "ok" });
