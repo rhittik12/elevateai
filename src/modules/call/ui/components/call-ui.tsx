@@ -18,9 +18,22 @@ export const CallUI = ({ meetingName }: Props) => {
     const handleJoin = async () => {
         if (!call) return;
 
-        await call.join();
+        try {
+            // Join the call first
+            await call.join({ create: false });
+            console.log("✅ Joined call");
 
-        setShow("call");
+            // IMPORTANT: Enable microphone after joining
+            await call.microphone.enable();
+            console.log("✅ Microphone enabled");
+
+            // Optionally enable camera too
+            // await call.camera.enable();
+
+            setShow("call");
+        } catch (error) {
+            console.error("❌ Failed to join call:", error);
+        }
     };
 
     const handleLeave = () => {

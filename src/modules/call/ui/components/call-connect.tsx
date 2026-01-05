@@ -33,6 +33,7 @@ export const CallConnect = ({ meetingId, meetingName, userId, userName, userImag
 
     const [client, setClient] = useState<StreamVideoClient>();
     useEffect(() => {
+        
         const _client = new StreamVideoClient({
             apiKey: process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY!,
             user: {
