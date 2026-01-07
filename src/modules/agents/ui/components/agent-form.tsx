@@ -41,14 +41,20 @@ export const AgentForm = ({
             onSuccess: async () => {
                 await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
 
+                await queryClient.invalidateQueries(trpc.premium.getFreeUsage.queryOptions());
+
                 onSuccess?.();
             },
             onError: (error) => {
                 toast.error(error.message);
+
+                if(error.data?.code === "FORBIDDEN") {
+                    router.push("/upgrade");
+                }
             },
         }),
     );
-
+ 
     const UpdateAgent = useMutation(
         trpc.agents.update.mutationOptions({
             onSuccess: async () => {
