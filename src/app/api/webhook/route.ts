@@ -101,10 +101,7 @@ export async function POST(req: NextRequest) {
             );
 
         if (!existingMeeting) {
-            return NextResponse.json(
-                { error: "Meeting not found" },
-                { status: 404 }
-            );
+            return NextResponse.json({ status: "ok - meeting already active or not found" });
         }
 
         await db

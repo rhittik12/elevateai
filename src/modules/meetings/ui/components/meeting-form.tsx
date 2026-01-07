@@ -39,6 +39,7 @@ export const MeetingForm = ({
     const queryClient = useQueryClient();
     const [openNewAgentDialog, setOpenNewAgentDialog] = useState(false);
     const [agentSearch, setAgentSearch] = useState("");
+    const router = useRouter();
 
     const agents = useQuery(
         trpc.agents.getMany.queryOptions({
@@ -53,10 +54,16 @@ export const MeetingForm = ({
             onSuccess: async (data) => {
                 await queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}));
 
+                await queryClient.invalidateQueries(trpc.premium.getFreeUsage.queryOptions());
+
                 onSuccess?.(data.id);
             },
             onError: (error) => {
                 toast.error(error.message);
+
+                if (error.data?.code === "FORBIDDEN") {
+                    router.push("/upgrade");
+                }
             },
         }),
     );
