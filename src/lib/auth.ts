@@ -7,6 +7,12 @@ import { polarClient } from "./polar";
 
 
 export const auth = betterAuth({
+    trustedOrigins: [
+        "http://localhost:3000",
+        "https://elevateai-five.vercel.app",
+    ],
+
+    baseURL: process.env.BETTER_AUTH_URL,
     plugins: [
         polar({
             client: polarClient,
