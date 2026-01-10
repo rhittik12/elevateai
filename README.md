@@ -1,4 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ElevateAI
+
+ElevateAI is an innovative platform that enables real-time video conversations with AI agents. Experience seamless interaction as you talk face-to-face with intelligent AI personalities, designed to elevate your professional potential through immersive communication.
+
+## Live Demo
+
+Check out the live application here: [https://elevateai-five.vercel.app/](https://elevateai-five.vercel.app/)
+
+## Features
+
+- **Dashboard**: A centralized hub for managing your activities and insights.
+- **Authentication**: Secure user authentication powered by Better Auth.
+- **Video Calls**: Real-time video communication capabilities using Stream IO.
+- **AI Integration**: Leverages OpenAI for intelligent features and interactions.
+- **Responsive Design**: Built with Tailwind CSS for a seamless experience across devices.
+
+## Tech Stack
+
+This project is built using a modern, robust technology stack:
+
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Database**: [Neon](https://neon.tech/) (PostgreSQL) with [Drizzle ORM](https://orm.drizzle.team/)
+- **Authentication**: [Better Auth](https://www.better-auth.com/)
+- **Real-time Video**: [Stream IO](https://getstream.io/)
+- **AI**: [OpenAI](https://openai.com/)
+- **API**: [tRPC](https://trpc.io/) & [TanStack Query](https://tanstack.com/query/latest)
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file:
+
+- `DATABASE_URL`
+- `BETTER_AUTH_URL`
+- `GITHUB_CLIENT_ID`
+- `GITHUB_CLIENT_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `POLAR_ACCESS_TOKEN`
+- `NEXT_PUBLIC_STREAM_CHAT_API_KEY`
+- `STREAM_CHAT_SECRET_KEY`
+- `NEXT_PUBLIC_STREAM_VIDEO_API_KEY`
+- `STREAM_VIDEO_SECRET_KEY`
+- `OPENAI_API_KEY`
 
 ## Getting Started
 
@@ -17,8 +61,6 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 
