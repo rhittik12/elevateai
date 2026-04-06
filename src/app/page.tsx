@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const features = [
   {
@@ -25,7 +26,7 @@ const steps = [
   {
     number: "01",
     title: "Connect",
-    description: "Set up your workflow and invite your team in minutes.",
+    description: "Set up your workflow in minutes.",
   },
   {
     number: "02",
@@ -55,7 +56,8 @@ const Page = () => {
 
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/80 bg-white/75 backdrop-blur-xl">
         <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6 lg:px-8">
-          <div className="flex items-center gap-10">
+          <div className="flex items-center gap-3">
+            <Image src="/logo.svg" alt="Elevate AI logo" width={36} height={36} />
             <Link href="/" className="text-2xl font-black tracking-tight text-slate-900">
               Elevate AI
             </Link>
@@ -82,10 +84,10 @@ const Page = () => {
         <section className="mx-auto grid w-full max-w-7xl items-center gap-14 px-6 pb-24 pt-8 md:grid-cols-2 lg:px-8 lg:pb-32 lg:pt-14">
           <div className="max-w-2xl space-y-8">
             <h1 className="text-5xl font-black leading-[0.95] tracking-[-0.03em] text-slate-900 md:text-7xl">
-              Turn Every Meeting Into <span className="text-blue-700">Action</span>
+              Meet Your Personal AI Meeting <span className="text-blue-700">Assistant</span>
             </h1>
             <p className="text-lg leading-relaxed text-slate-600 md:text-xl">
-              Elevate AI captures conversations, highlights decisions, and transforms ideas into trackable next steps with intelligent agents.
+              Elevate AI turns one-on-one conversations with AI into clear insights and next steps.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
               <Link
@@ -141,11 +143,10 @@ const Page = () => {
             {steps.map((step, index) => (
               <div key={step.number} className="relative z-10 mx-auto max-w-xs text-center">
                 <div
-                  className={`mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full border-4 text-2xl font-black shadow-xl ${
-                    index === 1
-                      ? "border-blue-500 bg-blue-700 text-white"
-                      : "border-slate-200 bg-white text-blue-700"
-                  }`}
+                  className={`mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full border-4 text-2xl font-black shadow-xl ${index === 1
+                    ? "border-blue-500 bg-blue-700 text-white"
+                    : "border-slate-200 bg-white text-blue-700"
+                    }`}
                 >
                   {step.number}
                 </div>
