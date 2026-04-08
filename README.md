@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/public/main.svg" alt="ElevateAI Logo" width="300" height="300" />
+  <img src="/public/main.svg" alt="ElevateAI Logo" width="900" height="600" />
   <h1>ElevateAI</h1>
   <p><strong>Your Personal AI Meeting Assistant — Real-time video conversations with intelligent AI agents.</strong></p>
 
